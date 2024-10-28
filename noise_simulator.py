@@ -16,18 +16,20 @@ def apply_pauli_noise(p_a: float, p_b: float, circ: QuantumCircuit):
     """
 
     #initialize circuit with same number of qubits as input
-    noisy_circ = QuantumCircuit(circ.num_qubits)
+    noisy_circ = QuantumCircuit(circ.qubits, circ.clbits)
 
     for instruct in circ.data:
+        # print(instruct)
         noisy_circ.append(instruct)
-        if instruct.is_controlled_gate():
-            print(instruct.qubits)
-            #append pauli on target(?) qubit with prob. p_b
-            if np.random.rand()<p_b: noisy_circ.append(random_pauli(), [instruct.qubits[0]]) #TODO : which qubit ??
-        else:
-            #append pauli on qubit with prob p_a
-            print(instruct.qubits)
-            if np.random.rand()<p_a: noisy_circ.append(random_pauli(), instruct.qubits)
+        if instruct.name not in ['reset', 'measure']:
+            if instruct.is_controlled_gate():
+                # print(instruct.qubits)
+                #append pauli on target(?) qubit with prob. p_b
+                if np.random.rand()<p_b: noisy_circ.append(random_pauli(), [instruct.qubits[0]]) #TODO : which qubit ??
+            else:
+                #append pauli on qubit with prob p_a
+                # print(instruct.qubits)
+                if np.random.rand()<p_a: noisy_circ.append(random_pauli(), instruct.qubits)
 
     return noisy_circ
 
