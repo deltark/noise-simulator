@@ -10,7 +10,7 @@ Each file contains the answer to one part of the problem:
 
 NOTE : Seeing the absolute state of qiskit right now after 2 years of not having to use it, I had to somehow put together code and versions that work with Aer, so it's not the latest qiskit version.
 
-qiskit 1.2.1
-qiskit-aer 0.15.1
-matplotlib 3.9.2
-numpy 2.1.2
+* qiskit 1.2.1
+* qiskit-aer 0.15.1
+* matplotlib 3.9.2
+* numpy 2.1.2
