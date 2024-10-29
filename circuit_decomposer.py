@@ -6,6 +6,7 @@ from qiskit.quantum_info import Operator
 def decompose(circ: QuantumCircuit, equiv_library=0):
     """
     Decomposes input circuit into the set of basis gates: {CX,ID,RZ,SX,X}
+    Only works for the quantum adder circuit.
 
     Args:
         circ: circuit to decompose (must only contain 1 and 2-qubit gates)
@@ -15,8 +16,8 @@ def decompose(circ: QuantumCircuit, equiv_library=0):
     """
     basis_set = ['x', 'cx', 'sx', 'rz', 'id', 'reset', 'measure']
     decomposed_circuit = QuantumCircuit(circ.qubits, circ.clbits)
-    circ = circ.decompose([Initialize, StatePreparation], 2)
-    circ = circ.decompose(CRZGate)
+    circ = circ.decompose([Initialize, StatePreparation], 2) #decompose state preparation into elementary gates
+    circ = circ.decompose(CRZGate) #decompose CRZ gates into CX RZ
     # print(decomposed_circuit)
 
     for instruct in circ.data:
@@ -35,12 +36,6 @@ def decompose(circ: QuantumCircuit, equiv_library=0):
 
         else: decomposed_circuit.append(instruct)
 
-        # elif instruct.name == 'p':
-
-
-        # elif instruct.name == 'cp':
-        #     decomposed_circuit.append(instruct.decompose())
-
         # elif instruct.name in equiv_library:
         #     decomposed_circuit.append("""pre-registered equivalence""", qubits)
 
@@ -52,6 +47,8 @@ def decompose(circ: QuantumCircuit, equiv_library=0):
         #     #TODO: add new equivalence to equiv_library       
 
     return decomposed_circuit
+
+# Below is the remains of my aborted iniital ambition of implementing the Euler Angles decomposition for one-qubit gates.
 
 # def euler_decomposer(instruct: CircuitInstruction):
 

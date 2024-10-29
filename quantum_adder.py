@@ -4,17 +4,22 @@ from qiskit.quantum_info import Statevector
 from qiskit.circuit.library import *
 import numpy as np
 
-def quantum_sum(a, b):
+def quantum_sum(a: int, b: int):
+    """Implements the quantum circuit that adds 2 numbers a and b. Returns the circuit."""
 
     n = max(a.bit_length(), b.bit_length())
-    rega, regb = QuantumRegister(n+1), QuantumRegister(n)
-    regc = ClassicalRegister(n+1)
+    rega, regb = QuantumRegister(n+1), QuantumRegister(n) #initialize quantum registers for a and b
+    regc = ClassicalRegister(n+1) #classical register for the measurement
 
     circ = QuantumCircuit(regb, rega, regc)
+    #prepare states of rega and regb into the binary representations of a and b
     circ.initialize(a, rega)
     circ.initialize(b, regb)
+
+    #Quantum Fourier Transform
     qft(circ, rega)
 
+    #Controlled rotations
     for j in range(n):
         angle = (2*np.pi) / (2 ** (j+2))
         circ.crz(angle, regb[n-j-1], rega[n])
@@ -24,18 +29,10 @@ def quantum_sum(a, b):
             angle = (2*np.pi) / (2 ** (j-i+1))
             circ.crz(angle, regb[n-j-1], rega[n-1-i])
 
-    # circ.append(qft(n+1).inverse(), rega)
+    #Inverse QFT
     qft_dagger(circ, rega)
 
     circ.measure(rega, regc)
-    # print(circ)
-
-    # circ.reset(regb)
-
-    # circ.save_statevector()
-    # job = backend.run(circ)
-    # counts = job.result().get_counts()
-    # res = int(max(counts),2)
     return circ
 
 def qft(circ, reg):

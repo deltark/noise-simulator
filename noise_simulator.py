@@ -34,6 +34,7 @@ def apply_pauli_noise(p_a: float, p_b: float, circ: QuantumCircuit):
     return noisy_circ
 
 def random_pauli():
+    """Dice roll for generating random Pauli gate (except Id) """
     dice = np.random.rand()
     if dice < 1/3: return XGate()
     elif dice >= 2/3: return YGate()
